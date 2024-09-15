@@ -1,0 +1,66 @@
+
+pipeline {
+    agent any
+    environment {
+        dockerHome = tool 'myDocker'
+        mavenHome = tool 'myMaven'
+        PATH = "$dockerHome/bin:$mavenHome/bin:$PATH"
+    }
+   
+    stages {
+        stage('Compile') {
+            steps {
+                dir('jenkins/currency-exchange-microservice') { 
+                    sh "mvn clean compile"
+                }
+            }
+        }
+       
+        stage('Integration Test') {
+            steps {
+                dir('jenkins/currency-exchange-microservice') {
+                    sh "mvn failsafe:integration-test failsafe:verify"
+                }
+            }
+        }
+
+        stage('Package') {
+            steps {
+                dir('jenkins/currency-exchange-microservice') {
+                    sh "mvn package -DskipTests"
+                }
+            }
+        }
+
+        stage('Build Image') {
+            steps {
+                script {
+                    image = docker.build("currencyapp:$BUILD_TAG")
+                }
+            }
+        }
+
+        stage('Push Image') {
+            steps {
+                script {
+                    // Use withRegistry to specify the Docker registry
+                    docker.withRegistry('https://index.docker.io/v1/', 'dockerhub') { // Specify the registry URL and credentials ID
+                        image.push() // Push the image
+                    }
+                }
+            }
+        }
+    }
+
+    post {
+        always {
+            echo "I always run"
+        }
+        success {
+            echo "I run when success"
+        }
+        failure {
+            echo "I run when failure"
+        }
+    }
+}

@@ -35,7 +35,7 @@ pipeline {
         stage('Build Image') {
             steps {
                 script {
-                    image = docker.build("currencyapp:$BUILD_TAG")
+                    image = docker.build("currencyapp:$BUILD_TAG", "jenkins/currency-exchange-microservice/Dockerfile")
                 }
             }
         }

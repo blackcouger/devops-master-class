@@ -1,4 +1,3 @@
-
 pipeline {
     agent any
     environment {
@@ -35,7 +34,8 @@ pipeline {
         stage('Build Image') {
             steps {
                 script {
-                    image = docker.build("currencyapp:$BUILD_TAG", "jenkins/currency-exchange-microservice/Dockerfile")
+                    // Specify the context directory and the Dockerfile
+                    image = docker.build("currencyapp:$BUILD_TAG", "-f jenkins/currency-exchange-microservice/Dockerfile jenkins/currency-exchange-microservice/")
                 }
             }
         }

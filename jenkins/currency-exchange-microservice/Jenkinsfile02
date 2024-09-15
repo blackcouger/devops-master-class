@@ -35,7 +35,7 @@ pipeline {
             steps {
                 script {
                     // Specify the context directory and the Dockerfile
-                    image = docker.build("currencyapp:$BUILD_TAG", "-f jenkins/currency-exchange-microservice/Dockerfile jenkins/currency-exchange-microservice/")
+                    image = docker.build("whitecouger/currencyapp:$BUILD_TAG", "-f jenkins/currency-exchange-microservice/Dockerfile jenkins/currency-exchange-microservice/")
                 }
             }
         }

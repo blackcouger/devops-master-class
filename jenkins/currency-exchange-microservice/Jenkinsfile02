@@ -12,6 +12,7 @@ pipeline {
             steps {
                 dir('jenkins/currency-exchange-microservice') { 
                     sh "mvn clean compile"
+sh "echo hello"
                 }
             }
         }
